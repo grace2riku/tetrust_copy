@@ -4,6 +4,8 @@ fn main() {
         for x in 0..13 {
             if x == 0 || x == 12 || y == 20 {
                 print!("[]");
+            } else {
+                print!(" .");
             }
         }
         println!();
