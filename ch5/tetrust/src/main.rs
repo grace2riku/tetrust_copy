@@ -95,6 +95,9 @@ fn main() {
 
     let mut pos = Position { x: 4, y: 0};
 
+    // 画面クリア
+    println!("\x1b[2J\x1b[H\x1b[?25l");
+
     // 5マス分落下させてみる
     for _ in 0..5 {
         // 描画用フィールドの生成
@@ -114,11 +117,12 @@ fn main() {
                 }
             }
         }
-        
+
         // posのy座標を更新
         pos.y += 1;
 
         // フィールドを描画
+        println!("\x1b[H"); // カーソルを先頭に移動
         for y in 0..21 {
             for x in 0..13 {
                 if field_buf[y][x] == 1 {
@@ -130,4 +134,7 @@ fn main() {
             println!();
         }
     }
+
+    // カーソルを再表示
+    println!("\x1b[?25h");
 }
