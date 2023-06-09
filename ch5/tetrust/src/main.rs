@@ -1,3 +1,5 @@
+use std::{thread, time};
+
 // ブロックの種類
 enum BlockKind {
     I,
@@ -133,6 +135,8 @@ fn main() {
             }
             println!();
         }
+        // 1秒間スリープする
+        thread::sleep(time::Duration::from_millis(1000));
     }
 
     // カーソルを再表示
