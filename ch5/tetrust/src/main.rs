@@ -63,6 +63,11 @@ const BLOCKS: [BlockShape; 7] = [
     ],
 ];
 
+struct Position {
+    x: usize,
+    y: usize,
+}
+
 fn main() {
     let field = [
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -88,30 +93,41 @@ fn main() {
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
 
-    // 描画用フィールドの生成
-    let mut field_buf = field;
-    // 描画用フィールドにブロックの情報を書き込む
-    for y in 0..4 {
-        for x in 0..4 {
-            field_buf[y+ 2][x+2] = BLOCKS[BlockKind::I as usize][y][x];
-            field_buf[y+ 2][x+7] = BLOCKS[BlockKind::O as usize][y][x];
-            field_buf[y+ 6][x+2] = BLOCKS[BlockKind::S as usize][y][x];
-            field_buf[y+ 6][x+7] = BLOCKS[BlockKind::Z as usize][y][x];
-            field_buf[y+10][x+2] = BLOCKS[BlockKind::J as usize][y][x];
-            field_buf[y+10][x+7] = BLOCKS[BlockKind::L as usize][y][x];
-            field_buf[y+14][x+2] = BLOCKS[BlockKind::T as usize][y][x];
-        }
-    }
+    let mut pos = Position { x: 4, y: 0};
 
-    // フィールドを描画
-    for y in 0..21 {
-        for x in 0..13 {
-            if field_buf[y][x] == 1 {
-                print!("[]");
-            } else {
-                print!(" .");
+    // 5マス分落下させてみる
+    for _ in 0..5 {
+        // 描画用フィールドの生成
+        let mut field_buf = field;
+        // 描画用フィールドにブロックの情報を書き込む
+        for y in 0..4 {
+            for x in 0..4 {
+                field_buf[y+ 2][x+2] = BLOCKS[BlockKind::I as usize][y][x];
+                field_buf[y+ 2][x+7] = BLOCKS[BlockKind::O as usize][y][x];
+                field_buf[y+ 6][x+2] = BLOCKS[BlockKind::S as usize][y][x];
+                field_buf[y+ 6][x+7] = BLOCKS[BlockKind::Z as usize][y][x];
+                field_buf[y+10][x+2] = BLOCKS[BlockKind::J as usize][y][x];
+                field_buf[y+10][x+7] = BLOCKS[BlockKind::L as usize][y][x];
+                field_buf[y+14][x+2] = BLOCKS[BlockKind::T as usize][y][x];
+                if BLOCKS[BlockKind::I as usize][y][x] == 1 {
+                    field_buf[y+pos.y][x+pos.x] = 1;
+                }
             }
         }
-        println!();
+        
+        // posのy座標を更新
+        pos.y += 1;
+
+        // フィールドを描画
+        for y in 0..21 {
+            for x in 0..13 {
+                if field_buf[y][x] == 1 {
+                    print!("[]");
+                } else {
+                    print!(" .");
+                }
+            }
+            println!();
+        }
     }
 }
