@@ -3,6 +3,7 @@ mod block;
 use std::sync::{Arc, Mutex};
 use std::{thread, time};
 use getch_rs::{Getch, Key};
+use block::{BlockKind, BLOCKS};
 
 // フィールドサイズ
 const FIELD_WIDTH: usize = 11 + 2;  // フィールド + 壁

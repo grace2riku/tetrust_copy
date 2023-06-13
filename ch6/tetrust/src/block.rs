@@ -5,7 +5,7 @@ use rand::{
 
 // ブロックの種類
 #[derive(Clone, Copy)]
-enum BlockKind {
+pub enum BlockKind {
     I,
     O,
     S,
@@ -30,8 +30,8 @@ impl Distribution<BlockKind> for Standard {
 }
 
 // ブロックの形状
-type BlockShape = [[usize; 4]; 4];
-const BLOCKS: [BlockShape; 7] = [
+pub type BlockShape = [[usize; 4]; 4];
+pub const BLOCKS: [BlockShape; 7] = [
     // Iブロック
     [
         [0,0,0,0],
