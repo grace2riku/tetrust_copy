@@ -1,3 +1,5 @@
+mod block;
+
 use std::sync::{Arc, Mutex};
 use std::{thread, time};
 use getch_rs::{Getch, Key};
