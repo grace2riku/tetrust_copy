@@ -1,9 +1,10 @@
 use crate::block::{BlockKind, BLOCKS};
 
+#[allow(clippy::needless_range_loop)]
 // フィールドを描画する
 pub fn draw(Game { field, pos, block }: &Game) {
     // 描画用フィールドの生成
-    let mut field_buf = field.clone();
+    let mut field_buf = *field;
     // 描画用フィールドにブロックの情報を書き込む
     for y in 0..4 {
         for x in 0..4 {
