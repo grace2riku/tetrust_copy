@@ -27,7 +27,7 @@ fn main() {
                     x: game.pos.x,
                     y: game.pos.y + 1,
                 };
-                if !is_collision(&game.field, &new_pos, game.block) {
+                if !is_collision(&game.field, &new_pos, &game.block) {
                     // posの座標を更新
                     game.pos = new_pos;
                 } else {
@@ -80,6 +80,13 @@ fn main() {
                 move_block(&mut game, new_pos);
                 draw(&game);
             }
+            Ok(Key::Char('x')) => {
+                // 右回転
+                let mut game = game.lock().unwrap();
+                rotate_right(&mut game);
+                draw(&game);
+            }
+
             Ok(Key::Char('q')) => {
                 break;
             }

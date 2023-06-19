@@ -1,4 +1,4 @@
-use crate::block::{BlockKind, BLOCKS};
+use crate::block::{BlockKind, BlockShape, BLOCKS};
 
 #[allow(clippy::needless_range_loop)]
 // フィールドを描画する
@@ -8,7 +8,7 @@ pub fn draw(Game { field, pos, block }: &Game) {
     // 描画用フィールドにブロックの情報を書き込む
     for y in 0..4 {
         for x in 0..4 {
-            if BLOCKS[*block as usize][y][x] == 1 {
+            if block[y][x] == 1 {
                 field_buf[y+pos.y][x+pos.x] = 1;
             }
         }
@@ -28,13 +28,13 @@ pub fn draw(Game { field, pos, block }: &Game) {
 }
 
 // ブロックがフィールドに衝突する場合は'true'を返す
-pub fn is_collision(field: &Field, pos: &Position, block: BlockKind) -> bool {
-    for y in 0..4 {
+pub fn is_collision(field: &Field, pos: &Position, block: &BlockShape) -> bool {
+        for y in 0..4 {
         for x in 0..4 {
             if y+pos.y >= FIELD_HEIGHT || x+pos.x >= FIELD_WIDTH {
                 continue;
             }
-            if field[y+pos.y][x+pos.x] & BLOCKS[block as usize][y][x] == 1 {
+            if field[y+pos.y][x+pos.x] & block[y][x] == 1 {
                 return true;
             }
         }
@@ -64,7 +64,7 @@ impl Position {
 pub struct Game {
     pub field: Field,
     pub pos: Position,
-    pub block: BlockKind,    
+    pub block: BlockShape,
 }
 
 impl Game {
@@ -94,7 +94,7 @@ impl Game {
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],                        
             ],
             pos: Position::init(),
-            block: rand::random::<BlockKind>(),
+            block: BLOCKS[rand::random::<BlockKind>() as usize],
         }
     }
 }
@@ -103,7 +103,7 @@ impl Game {
 pub fn fix_block(Game { field, pos, block }: &mut Game) {
     for y in 0..4 {
         for x in 0..4 {
-            if BLOCKS[*block as usize][y][x] == 1 {
+            if block[y][x] == 1 {
                 field[y+pos.y][x+pos.x] = 1;
             }
         }
@@ -130,7 +130,7 @@ pub fn erase_line(field: &mut Field) {
 
 // ブロックを指定した座標へ移動できるなら移動する
 pub fn move_block(game: &mut Game, new_pos: Position) {
-    if !is_collision(&game.field, &new_pos, game.block) {
+    if !is_collision(&game.field, &new_pos, &game.block) {
         // posの座標を更新
         game.pos = new_pos;
     }
@@ -142,9 +142,9 @@ pub fn spawn_block(game: &mut Game) -> Result<(), ()> {
     // posの座標を初期値へ
     game.pos = Position::init();
     // ブロックをランダム生成
-    game.block = rand::random();
+    game.block = BLOCKS[rand::random::<BlockKind>() as usize];
     // 衝突チェック
-    if is_collision(&game.field, &game.pos, game.block) {
+    if is_collision(&game.field, &game.pos, &game.block) {
         Err(())
     } else {
         Ok(())
@@ -162,4 +162,18 @@ pub fn gameover(game: &Game) {
 pub fn quit() {
     // カーソルを再表示
     println!("\x1b[?25h");
+}
+
+// 右に90度回転する
+#[allow(clippy::needless_range_loop)]
+pub fn rotate_right(game: &mut Game) {
+    let mut new_shape: BlockShape = Default::default();
+    for y in 0..4 {
+        for x in 0..4 {
+            new_shape[y][x] = game.block[4-1-x][y];
+        }
+    }
+    if !is_collision(&game.field, &game.pos, &new_shape) {
+        game.block = new_shape;
+    }
 }
